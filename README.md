@@ -1,3 +1,6 @@
+> ⚠️ 非官方补丁：本项目是用户级的社区补丁，针对 DeepSeek Harness 的已发布 bundle 做修改，
+> 与 DeepSeek 官方无关，不随官方版本升级自动生效（升级后请重新运行 install.ps1）。
+
 # DSH Full Access 一次性开关（不再每次确认）
 
 给 DeepSeek Harness（DSH，v0.1.1-rc.2 的 web profile）加一个**一次性开关**：
