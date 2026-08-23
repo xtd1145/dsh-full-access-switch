@@ -1,0 +1,112 @@
+﻿diff --git "a/C:\\Users\\BI\\Documents\\ds\\dsh-full-access-switch\\patches\\_orig-permission-presets.client.js" "b/C:\\Users\\BI\\.dsh\\profiles\\node_modules\\@deepseek-ai\\dsh-client-ui-permission-presets\\lib\\client.js"
+index c7dbe8e..f56748f 100644
+--- "a/C:\\Users\\BI\\Documents\\ds\\dsh-full-access-switch\\patches\\_orig-permission-presets.client.js"
++++ "b/C:\\Users\\BI\\.dsh\\profiles\\node_modules\\@deepseek-ai\\dsh-client-ui-permission-presets\\lib\\client.js"
+@@ -10,7 +10,26 @@ window.__ModuleLoader__.load({
+ 		let _deepseek_ai_dsh_client_runtime_client = require("@deepseek-ai/dsh-client-runtime/client");
+ 		//#region lib/types/client/presentation.js
+ 		/** Machine value of the preset that requires an explicit GUI risk gate. */
+-		const FULL_ACCESS_PRESET = "danger-full-access"; into user-facing title case.
++		const FULL_ACCESS_PRESET = "danger-full-access";
++		/** localStorage key of the one-time "don't ask again for Full access" switch. */
++		const FULL_ACCESS_SKIP_KEY = "dsh.permission.skipFullAccessConfirmation";
++		/** Whether the one-time Full-access confirmation switch is currently on. */
++		function fullAccessConfirmationSkipped() {
++			try {
++				return window.localStorage.getItem(FULL_ACCESS_SKIP_KEY) === "1";
++			} catch {
++				return false;
++			}
++		}
++		/** Persist the one-time switch state (browser-local, survives restarts). */
++		function setFullAccessConfirmationSkipped(value) {
++			try {
++				if (value) window.localStorage.setItem(FULL_ACCESS_SKIP_KEY, "1");
++				else window.localStorage.removeItem(FULL_ACCESS_SKIP_KEY);
++			} catch {}
++		}
++		/**
++		* Convert conventional kebab-case preset names into user-facing title case.
+ 		* @param name - host-supplied preset label or key.
+ 		* @returns the title-cased conventional key, or a non-kebab label unchanged.
+ 		*/
+@@ -63,6 +82,7 @@ window.__ModuleLoader__.load({
+ 			const [open, setOpen] = (0, react.useState)(false);
+ 			const [confirmingFullAccess, setConfirmingFullAccess] = (0, react.useState)(false);
+ 			const [acknowledged, setAcknowledged] = (0, react.useState)(false);
++			const [remembered, setRemembered] = (0, react.useState)(fullAccessConfirmationSkipped());
+ 			(0, react.useEffect)(() => {
+ 				load();
+ 			}, [load]);
+@@ -102,13 +122,13 @@ window.__ModuleLoader__.load({
+ 					onSelect: (id) => {
+ 						setOpen(false);
+ 						if (id === state.currentValue) return;
+-						if (id === "danger-full-access") {
++						if (id === "danger-full-access" && !fullAccessConfirmationSkipped()) {
+ 							setAcknowledged(false);
+ 							setConfirmingFullAccess(true);
+ 							return;
+ 						}
+ 						select(id);
+-						},
++					},
+ 					align: "end",
+ 					portal: true,
+ 					anchor: (0, react_jsx_runtime.jsxs)("button", {
+@@ -123,6 +143,28 @@ window.__ModuleLoader__.load({
+ 						children: [label, (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.IconChevronDownOutline14, { className: PermissionRow_module_css_default.chevron })]
+ 					})
+ 				})]
++			}), (0, react_jsx_runtime.jsx)("label", {
++				style: {
++					display: "flex",
++					alignItems: "center",
++					gap: "8px",
++					padding: "10px 0 12px",
++					cursor: "pointer",
++					fontSize: "12px",
++					lineHeight: "18px",
++					color: "var(--dsw-alias-label-secondary)"
++				},
++				children: [(0, react_jsx_runtime.jsx)("input", {
++					type: "checkbox",
++					checked: remembered,
++					onChange: (event) => {
++						const value = event.target.checked;
++						setRemembered(value);
++						setFullAccessConfirmationSkipped(value);
++					}
++				}), (0, react_jsx_runtime.jsx)("span", {
++					children: t("remember.label")
++				})]
+ 			}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.RiskConfirmation, {
+ 				open: confirmingFullAccess,
+ 				title: t("confirm.title"),
+@@ -151,7 +193,7 @@ window.__ModuleLoader__.load({
+ 		const zh = {
+ 			"title": "权限",
+ 			"description": "选择新会话的默认权限模式",
+-			"loading": "加载中",
++			"remember.label": "不再询问 Full access 确认（记住我的选择）",
+ 			"loading": "加载中",
+ 			"unavailable": "不可用",
+ 			"confirm.title": "确认启用 Full access？",
+@@ -164,7 +206,7 @@ window.__ModuleLoader__.load({
+ 		const en = {
+ 			"title": "Permission",
+ 			"description": "Choose the default permission mode for new sessions",
+-			"loading": "Loading",
++			"remember.label": "Don't ask again for Full access (remember my choice)",
+ 			"loading": "Loading",
+ 			"unavailable": "Unavailable",
+ 			"confirm.title": "Enable Full access?",
+@@ -385,7 +427,7 @@ window.__ModuleLoader__.load({
+ 				label: displayPermissionPreset(option.value, option.name),
+ 				...option.description !== void 0 ? { detail: option.description } : {},
+ 				...option.value === value.currentValue ? { active: true } : {},
+-				...option.value === "danger-full-access" ? { confirmation: {
++				...option.value === "danger-full-access" && !fullAccessConfirmationSkipped() ? { confirmation: {
+ 					title: t("confirm.title"),
+ 					description: t("confirm.description"),
+ 					acknowledgeLabel: t("confirm.acknowledge"),

@@ -1,0 +1,69 @@
+{
+  "version": "0.1.1-rc.2",
+  "files": [
+    {
+      "package": "@deepseek-ai/dsh-client-ui-permission-presets",
+      "client": "lib/client.js",
+      "marker": "FULL_ACCESS_SKIP_KEY",
+      "patches": [
+        {
+          "name": "helpers: FULL_ACCESS_SKIP_KEY + setters",
+          "old": "\t\t/** Machine value of the preset that requires an explicit GUI risk gate. */\n\t\tconst FULL_ACCESS_PRESET = \"danger-full-access\";",
+          "new": "\t\t/** Machine value of the preset that requires an explicit GUI risk gate. */\n\t\tconst FULL_ACCESS_PRESET = \"danger-full-access\";\n\t\t/** localStorage key of the one-time \"don't ask again for Full access\" switch. */\n\t\tconst FULL_ACCESS_SKIP_KEY = \"dsh.permission.skipFullAccessConfirmation\";\n\t\t/** Whether the one-time Full-access confirmation switch is currently on. */\n\t\tfunction fullAccessConfirmationSkipped() {\n\t\t\ttry {\n\t\t\t\treturn window.localStorage.getItem(FULL_ACCESS_SKIP_KEY) === \"1\";\n\t\t\t} catch {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t}\n\t\t/** Persist the one-time switch state (browser-local, survives restarts). */\n\t\tfunction setFullAccessConfirmationSkipped(value) {\n\t\t\ttry {\n\t\t\t\tif (value) window.localStorage.setItem(FULL_ACCESS_SKIP_KEY, \"1\");\n\t\t\t\telse window.localStorage.removeItem(FULL_ACCESS_SKIP_KEY);\n\t\t\t} catch {}\n\t\t}\n\t\t/**\n\t\t* Convert conventional kebab-case preset names"
+        },
+        {
+          "name": "PermissionRow: remembered state",
+          "old": "\t\t\tconst [confirmingFullAccess, setConfirmingFullAccess] = (0, react.useState)(false);\n\t\t\tconst [acknowledged, setAcknowledged] = (0, react.useState)(false);",
+          "new": "\t\t\tconst [confirmingFullAccess, setConfirmingFullAccess] = (0, react.useState)(false);\n\t\t\tconst [acknowledged, setAcknowledged] = (0, react.useState)(false);\n\t\t\tconst [remembered, setRemembered] = (0, react.useState)(fullAccessConfirmationSkipped());"
+        },
+        {
+          "name": "PermissionRow: skip gate when switch on",
+          "old": "\t\t\t\t\tonSelect: (id) => {\n\t\t\t\t\t\tsetOpen(false);\n\t\t\t\t\t\tif (id === state.currentValue) return;\n\t\t\t\t\t\tif (id === \"danger-full-access\") {\n\t\t\t\t\t\t\tsetAcknowledged(false);\n\t\t\t\t\t\t\tsetConfirmingFullAccess(true);\n\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tselect(id);\n\t\t\t\t\t\t},",
+          "new": "\t\t\t\t\tonSelect: (id) => {\n\t\t\t\t\t\tsetOpen(false);\n\t\t\t\t\t\tif (id === state.currentValue) return;\n\t\t\t\t\t\tif (id === \"danger-full-access\" && !fullAccessConfirmationSkipped()) {\n\t\t\t\t\t\t\tsetAcknowledged(false);\n\t\t\t\t\t\t\tsetConfirmingFullAccess(true);\n\t\t\t\t\t\t\treturn;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tselect(id);\n\t\t\t\t\t},"
+        },
+        {
+          "name": "PermissionRow: one-time switch checkbox UI",
+          "old": "\t\t\t})]\n\t\t\t}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.RiskConfirmation, {\n\t\t\t\topen: confirmingFullAccess,",
+          "new": "\t\t\t})]\n\t\t\t}), (0, react_jsx_runtime.jsx)(\"label\", {\n\t\t\t\tstyle: {\n\t\t\t\t\tdisplay: \"flex\",\n\t\t\t\t\talignItems: \"center\",\n\t\t\t\t\tgap: \"8px\",\n\t\t\t\t\tpadding: \"10px 0 12px\",\n\t\t\t\t\tcursor: \"pointer\",\n\t\t\t\t\tfontSize: \"12px\",\n\t\t\t\t\tlineHeight: \"18px\",\n\t\t\t\t\tcolor: \"var(--dsw-alias-label-secondary)\"\n\t\t\t\t},\n\t\t\t\tchildren: [(0, react_jsx_runtime.jsx)(\"input\", {\n\t\t\t\t\ttype: \"checkbox\",\n\t\t\t\t\tchecked: remembered,\n\t\t\t\t\tonChange: (event) => {\n\t\t\t\t\t\tconst value = event.target.checked;\n\t\t\t\t\t\tsetRemembered(value);\n\t\t\t\t\t\tsetFullAccessConfirmationSkipped(value);\n\t\t\t\t\t}\n\t\t\t\t}), (0, react_jsx_runtime.jsx)(\"span\", {\n\t\t\t\t\tchildren: t(\"remember.label\")\n\t\t\t\t})]\n\t\t\t}), (0, react_jsx_runtime.jsx)(_deepseek_ai_dsh_client_ui_primitives.RiskConfirmation, {\n\t\t\t\topen: confirmingFullAccess,"
+        },
+        {
+          "name": "zh locale: remember label",
+          "old": "\t\t\t\"description\": \"选择新会话的默认权限模式\",\n\t\t\t\"loading\": \"加载中\",",
+          "new": "\t\t\t\"description\": \"选择新会话的默认权限模式\",\n\t\t\t\"remember.label\": \"不再询问 Full access 确认（记住我的选择）\","
+        },
+        {
+          "name": "en locale: remember label",
+          "old": "\t\t\t\"description\": \"Choose the default permission mode for new sessions\",\n\t\t\t\"loading\": \"Loading\",",
+          "new": "\t\t\t\"description\": \"Choose the default permission mode for new sessions\",\n\t\t\t\"remember.label\": \"Don't ask again for Full access (remember my choice)\","
+        },
+        {
+          "name": "popup: omit confirmation when switch on",
+          "old": "\t\t\t\t...option.value === \"danger-full-access\" ? { confirmation: {",
+          "new": "\t\t\t\t...option.value === \"danger-full-access\" && !fullAccessConfirmationSkipped() ? { confirmation: {"
+        }
+      ]
+    },
+    {
+      "package": "@deepseek-ai/dsh-client-ui-conversation",
+      "client": "lib/client.js",
+      "marker": "FULL_ACCESS_SKIP_KEY",
+      "patches": [
+        {
+          "name": "helpers: FULL_ACCESS_SKIP_KEY",
+          "old": "\t\t//#region lib/types/client/skeleton/PermissionSelect.js\n\t\tconst FULL_ACCESS = \"danger-full-access\";",
+          "new": "\t\t//#region lib/types/client/skeleton/PermissionSelect.js\n\t\tconst FULL_ACCESS = \"danger-full-access\";\n\t\t/** localStorage key of the one-time \"don't ask again for Full access\" switch. */\n\t\tconst FULL_ACCESS_SKIP_KEY = \"dsh.permission.skipFullAccessConfirmation\";\n\t\t/** Whether the one-time Full-access confirmation switch is currently on. */\n\t\tfunction fullAccessConfirmationSkipped() {\n\t\t\ttry {\n\t\t\t\treturn window.localStorage.getItem(FULL_ACCESS_SKIP_KEY) === \"1\";\n\t\t\t} catch {\n\t\t\t\treturn false;\n\t\t\t}\n\t\t}\n\t\tconst shieldOutline = "
+        },
+        {
+          "name": "composer: skip gate when switch on",
+          "old": "\t\t\tconst choose = (id) => {\n\t\t\t\tsetOpen(false);\n\t\t\t\tif (id === value.currentValue) return;\n\t\t\t\tif (id === FULL_ACCESS) {\n\t\t\t\t\tsetAcknowledged(false);\n\t\t\t\t\tsetConfirmation(id);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tsubmit(id);\n\t\t\t};",
+          "new": "\t\t\tconst choose = (id) => {\n\t\t\t\tsetOpen(false);\n\t\t\t\tif (id === value.currentValue) return;\n\t\t\t\tif (id === FULL_ACCESS && !fullAccessConfirmationSkipped()) {\n\t\t\t\t\tsetAcknowledged(false);\n\t\t\t\t\tsetConfirmation(id);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tsubmit(id);\n\t\t\t};"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "section": "permission",
+    "key": "defaultPreset",
+    "value": "danger-full-access"
+  }
+}

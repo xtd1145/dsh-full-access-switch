@@ -1,0 +1,33 @@
+﻿diff --git "a/C:\\Users\\BI\\Documents\\ds\\dsh-full-access-switch\\patches\\_orig-conversation.client.js" "b/C:\\Users\\BI\\.dsh\\profiles\\node_modules\\@deepseek-ai\\dsh-client-ui-conversation\\lib\\client.js"
+index 4a07001..0784532 100644
+--- "a/C:\\Users\\BI\\Documents\\ds\\dsh-full-access-switch\\patches\\_orig-conversation.client.js"
++++ "b/C:\\Users\\BI\\.dsh\\profiles\\node_modules\\@deepseek-ai\\dsh-client-ui-conversation\\lib\\client.js"
+@@ -3239,7 +3239,18 @@ window.__ModuleLoader__.load({
+ 		};
+ 		//#endregion
+ 		//#region lib/types/client/skeleton/PermissionSelect.js
+-		const FULL_ACCESS = "danger-full-access";"M8.20554 0.899994L14.7901 3.36857V7.01026C14.7901 12 11.0466 14.2103 8.20554 15.3C5.36446 14.2103 1.62012 12 1.62012 7.01026V3.36857L8.20554 0.899994Z";
++		const FULL_ACCESS = "danger-full-access";
++		/** localStorage key of the one-time "don't ask again for Full access" switch. */
++		const FULL_ACCESS_SKIP_KEY = "dsh.permission.skipFullAccessConfirmation";
++		/** Whether the one-time Full-access confirmation switch is currently on. */
++		function fullAccessConfirmationSkipped() {
++			try {
++				return window.localStorage.getItem(FULL_ACCESS_SKIP_KEY) === "1";
++			} catch {
++				return false;
++			}
++		}
++		const shieldOutline = "M8.20554 0.899994L14.7901 3.36857V7.01026C14.7901 12 11.0466 14.2103 8.20554 15.3C5.36446 14.2103 1.62012 12 1.62012 7.01026V3.36857L8.20554 0.899994Z";
+ 		const permissionGlyphs = {
+ 			"read-only": (0, react_jsx_runtime.jsxs)("svg", {
+ 				width: "16",
+@@ -3360,7 +3371,7 @@ window.__ModuleLoader__.load({
+ 			const choose = (id) => {
+ 				setOpen(false);
+ 				if (id === value.currentValue) return;
+-				if (id === FULL_ACCESS) {
++				if (id === FULL_ACCESS && !fullAccessConfirmationSkipped()) {
+ 					setAcknowledged(false);
+ 					setConfirmation(id);
+ 					return;
