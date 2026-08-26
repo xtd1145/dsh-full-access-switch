@@ -1,0 +1,21 @@
+# dsh-full-access-switch — installable bundle patch.
+#
+# Installed via:  npx @deepseek-ai/dsh plugin --profile web add https://github.com/xtd1145/dsh-full-access-switch
+#
+# Replaces the whole "permission" row config (patch semantics), so the full
+# preset table is restated here — same table as the base bundle, plus the
+# one-time switch: every NEW session (new workspace / new conversation) is
+# pinned to danger-full-access + never at creation, with zero confirmation.
+- id: permission
+  config:
+    defaultPreset: danger-full-access
+    presets:
+      read-only:
+        sandbox: read-only
+        approval: ask
+      workspace-write:
+        sandbox: workspace-write
+        approval: ask
+      danger-full-access:
+        sandbox: danger-full-access
+        approval: never
