@@ -1,7 +1,7 @@
 {
   "name": "dsh-full-access-switch",
   "version": "0.1.0",
-  "description": "DSH 一次性 Full access 开关：新工作区/新对话不再逐个确认（patch 工具 + 安装/卸载脚本）",
+  "description": "DSH Full access 一次性开关：新工作区/新对话默认 full access，不再逐个确认（可安装 bundle + 补丁工具）",
   "keywords": [
     "dsh",
     "dsh-plugin",
@@ -18,5 +18,10 @@
   },
   "dependencies": {
     "cordis": "^4.0.1"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
   }
 }
