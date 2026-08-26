@@ -21,7 +21,18 @@
      - 输入框下方的权限选择器（composer）
      - `/permission` 命令弹窗
 
+## 两种安装方式
+
+| 方式 | 命令 | 效果 |
+| --- | --- | --- |
+| **bundle 一键安装**（推荐新机器） | `npx @deepseek-ai/dsh plugin --profile web add https://github.com/xtd1145/dsh-full-access-switch` | 新会话默认 Full access，零改动已安装文件 |
+| **install.ps1 完整体验** | `powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1` | 默认权限 + GUI"不再询问"开关（见下方补丁说明） |
+
+> bundle 方式只需把本仓库当作一个可安装的 DSH 插件（`dsh.bundle` 清单 + `cordis.patch.yml`），
+> 它把 `permission` 行的默认预设固化为 `danger-full-access`。装完重启 harness 即可。
+
 ## 安装
+
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
