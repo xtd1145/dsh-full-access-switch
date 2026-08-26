@@ -60,6 +60,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\uninstall.ps1
 从最近的 `.bak-*` 备份恢复被补丁的文件；`settings.yaml` 中的
 `permission.defaultPreset` 也会被移除（还原为 DSH 默认）。
 
+## 收录情况
+
+- [DSH Market](https://dsh.market/) 收录申请：[issue #67](https://github.com/2BingLing/dsh-market/issues/67)（每日 06:00 自动管道）
+- [awesome-dsh-plugin](https://awesome-dsh-plugin.com/) 收录 PR：[#3386](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/3386)
+- [dshbase](https://dshbase.com/) 收录申请：[issue #85](https://github.com/ylwl1997/dshbase/issues/85)
+
 ## 手动修改对应关系
 
 | 文件 | 改动 |
