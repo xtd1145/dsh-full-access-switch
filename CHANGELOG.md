@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 (2026-08-26)
+
+- Fix: remove the `cordis@^4.0.1` dependency - no stable `cordis` release exists on npm (DSH ships the scoped
+  `@deepseek-ai/cordis`), which made `pnpm install` (and dshbase L1 verification) fail. The bundle needs no
+  runtime dependency; `cordis.patch.yml` is the cordis marker. Also dropped the `install`/`uninstall` npm
+  scripts (they were convenience wrappers, not lifecycle hooks).
+
 ## 0.1.0 (2026-08-24)
 
 - First release: one-time Full access switch for DeepSeek Harness (web profile, 0.1.1-rc.2).

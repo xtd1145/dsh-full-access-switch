@@ -1,6 +1,6 @@
 {
   "name": "dsh-full-access-switch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DSH Full access 一次性开关：新工作区/新对话默认 full access，不再逐个确认（可安装 bundle + 补丁工具）",
   "keywords": [
     "dsh",
@@ -13,11 +13,7 @@
   "license": "MIT",
   "author": "xtd1145",
   "scripts": {
-    "install": "powershell -NoProfile -ExecutionPolicy Bypass -File ./install.ps1",
-    "uninstall": "powershell -NoProfile -ExecutionPolicy Bypass -File ./uninstall.ps1"
-  },
-  "dependencies": {
-    "cordis": "^4.0.1"
+    "verify": "node scripts/verify-patches.mjs"
   },
   "dsh": {
     "bundle": {
